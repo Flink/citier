@@ -39,18 +39,7 @@ module Citier
 
         citier_debug("table_name -> #{self.table_name}")
 
-        def self.find(*args) #overrides find to get all attributes
-
-          tuples = super
-
-          # in case of many objects, return an array of them, reloaded to pull in inherited attributes
-          return tuples.map{|x| x.reload} if tuples.kind_of?(Array)
-
-          # in case of only one tuple, return it reloaded.
-          # Can't use reload as would loop inifinitely, so do a search by id instead.
-          # Probably a nice way of cleaning this a bit
-          return tuples.class.where(tuples.class[:id].eq(tuples.id))[0]
-        end
+        after_find :load_child_attributes
 
         # Add the functions required for root classes only
         send :include, Citier::RootInstanceMethods

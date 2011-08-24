@@ -40,5 +40,9 @@ module Citier
       self.class.superclass==ActiveRecord::Base
     end
 
+    def load_child_attributes
+      return if attributes.keys.sort == self.class.column_names.sort
+      reload
+    end
   end
 end
